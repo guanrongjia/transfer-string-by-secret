@@ -19,19 +19,6 @@ def getKeys():
     save_key(pri, 'private.pem')
 
 
-def rsa_encode(text):
-    '''
-    加密函数,使用公钥加密
-    :param text: 明文
-    :return:
-    '''
-    getKeys()
-    public_key = read_key('public.pem')
-    public_key = rsa.PublicKey.load_pkcs1(public_key)
-    text = smart_decode(text).encode('utf8')
-    crypto = rsa.encrypt(text, public_key)
-    return crypto
-
 def rsa_decode(text):
     '''
     解密函数，使用私钥解密
@@ -44,4 +31,4 @@ def rsa_decode(text):
     return message
 
 if __name__ == '__main__':
-    pass
+    getKeys()

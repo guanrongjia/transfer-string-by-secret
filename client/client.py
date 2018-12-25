@@ -1,10 +1,10 @@
 #coding=utf8
 from socket import *
-from tools import get_user_input, file_validate, key_validate, save_key, smart_decode
+from tools import get_user_input, file_validate, read_key, smart_decode
 from tools_aes import aes_encode
 from tools_rsa import rsa_encode
 
-target = ('127.0.0.1', 15324)
+target = ('35.200.62.251', 8239)
 def get_header(name):
     leng = len(name)
     assert leng < 250
@@ -34,23 +34,19 @@ if __name__ == '__main__':
         if user_input == '2':
             continue
 
-        encode_type = get_user_input(u'请选择加密模式（输入序号）\n 1、AES-128 \n 2、AES-192 \n 3、AES-256\n 4、RSA-256', [1, 2, 3, 4])
+        encode_type = get_user_input(u'请选择加密模式（输入序号）\n 1、AES-256\n 2、RSA-256', [1, 2, 3, 4])
         ascii_byte = str(int(encode_type) * 8 + 8)
-        encode_type_map = {'1': 'AES-128', '2': 'AES-192', '3': 'AES-256', '4': 'RSA-256'}
+        encode_type_map = {'1': 'AES-256', '2': 'RSA-256'}
         encode_type = encode_type_map.get(encode_type)
-        if encode_type in ['AES-128',  'AES-192', 'AES-256']:
-            key = get_user_input(remind=u'请输入自定义%s位ascii码作为key，将根据key生成堆成秘钥' % ascii_byte, validate_fun=key_validate, args={'length': int(ascii_byte)})
-            save_key(key, u'key.bcp')
+        if encode_type in ['AES-256']:
+            key = read_key(u'key.bcp')
             secret_data = aes_encode(source_data, key)
         elif encode_type in ['RSA-256']:
-            print u'选择使用RSA-256算法，即将随机生成公钥、私钥。。。'
             secret_data = rsa_encode(source_data)
         else:
             print u'选择错误，请重新执行。。。'
             continue
-        print u'加密后数据为：'
-        print secret_data
-        print u'向服务器发送数据。。。'
+        print u'数据解密完成，正在向服务器发送数据。。。'
         send_data(encode_type + secret_data)
         print u'发送数据成功，请查看服务器输出。。。'
         user_input = get_user_input(u'请问是否继续向服务器传输数据（输入序号） \n 1、继续 \n 2、退出',  [1, 2])

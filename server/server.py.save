@@ -3,7 +3,7 @@ import SocketServer
 from tools_rsa import rsa_decode
 from tools_aes import aes_decode
 from tools import smart_decode
-addr = ('127.0.0.1', 15324)
+addr = ('', 12346)
 class MyTCPHandler (SocketServer.StreamRequestHandler):
     def handle (self):
         source_data = self.rfile.readline().strip()
